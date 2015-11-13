@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreferenceScreen 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:title="Settings">
+	<CheckBoxPreference
+        android:key = "share"
+		android:title="Share with others?"
+		android:summaryOn="Yes,I love it!"
+		android:summaryOff="No,I am sorry."
+		android:defaultValue="true">
+	</CheckBoxPreference>
+    <ListPreference
+        android:key="distance"
+        android:title="Distance to display"
+        android:dialogTitle="Distance to display"
+        android:entries="@array/distance"
+        android:entryValues="@array/distance_value">
+    </ListPreference>
+</PreferenceScreen>
