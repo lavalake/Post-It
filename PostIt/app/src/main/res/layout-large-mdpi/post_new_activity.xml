@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:focusableInTouchMode="false"
+    android:id="@+id/pop_screen">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/NewPostEditView"
+        android:layout_gravity="top" />
+
+
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/SendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        fab:fab_icon="@drawable/ic_action_send"
+        fab:fab_colorNormal="@color/pink"
+        fab:fab_colorPressed="@color/blue_semi_transparent_pressed"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

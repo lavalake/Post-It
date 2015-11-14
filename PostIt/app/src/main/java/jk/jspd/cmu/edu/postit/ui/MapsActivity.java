@@ -1,4 +1,4 @@
-package jk.jspd.cmu.edu.postit;
+package jk.jspd.cmu.edu.postit.ui;
 
 import java.util.HashMap;
 import android.content.Intent;
@@ -8,14 +8,10 @@ import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.view.View.OnClickListener;
 import android.telephony.TelephonyManager;
 
@@ -37,11 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 //import com.android.volley.toolbox.JsonObjectRequest;
 //import com.android.volley.toolbox.Volley;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,7 +45,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener {
+import jk.jspd.cmu.edu.postit.model.AccelerometerSensor;
+import jk.jspd.cmu.edu.postit.model.ConnectionManager;
+import jk.jspd.cmu.edu.postit.model.GPSTracker;
+import jk.jspd.cmu.edu.postit.R;
+
+public class MapsActivity extends FragmentActivity implements InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.OnMapClickListener, AccelerometerSensor.Callbacks {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     GPSTracker gps;
@@ -65,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
     Marker ownMarker;
 
     PopupWindow popupWindow;
+    ConnectionManager mConn;
 
     //set the default number of words for small display
     int len = 20;
@@ -92,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.maps_activity);
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(this.TELEPHONY_SERVICE);
         imei = telephonyManager.getDeviceId();
         timeStamp = -1;
@@ -272,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
 
     @Override
     public View getInfoContents(Marker marker) {
-        View infoWindow = getLayoutInflater().inflate(R.layout.infowindow,null);
+        View infoWindow = getLayoutInflater().inflate(R.layout.pop_info,null);
         TextView title = (TextView) infoWindow.findViewById(R.id.marker_title);
         //TextView snippet = (TextView) infoWindow.findViewById(R.id.marker_snippet);
         System.out.println("change color");
@@ -313,7 +312,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
         System.out.println("marker");
         //currentId = markerPostMap.get(marker);
         if (popupWindow == null) {
-            View infoWindow = getLayoutInflater().inflate(R.layout.taste, null);
+            View infoWindow = getLayoutInflater().inflate(R.layout.postinfo_activity, null);
             TextView address = (TextView) infoWindow.findViewById(R.id.address);
             address.setText("Jason, CMU Student");
             TextView title = (TextView) infoWindow.findViewById(R.id.show_something);
@@ -373,5 +372,15 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
         }
 
         return false;
+    }
+
+    @Override
+    public void onMoveChanged(boolean move, double value) {
+        
+    }
+
+    @Override
+    public void onMoveAccuracyChanged(int accuracy) {
+
     }
 }

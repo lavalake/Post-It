@@ -1,7 +1,9 @@
-package jk.jspd.cmu.edu.postit;
+package jk.jspd.cmu.edu.postit.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import jk.jspd.cmu.edu.postit.R;
 
 public class Preferences extends PreferenceActivity {
 

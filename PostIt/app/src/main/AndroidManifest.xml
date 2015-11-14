@@ -48,7 +48,7 @@
             android:name="android.permission.ACCESS_FINE_LOCATION" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:label="PostIt"
             android:launchMode="singleTask">
             <intent-filter>
@@ -58,15 +58,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapsActivity"
+            android:name=".ui.MapsActivity"
             android:label="PostIt"
             android:launchMode="singleTask">
 
         </activity>
-        <activity android:name=".PostNewActivity"
+        <activity android:name=".ui.PostNewActivity"
             android:label="What's up?"
             android:launchMode="singleTask"></activity>
-        <activity android:name=".Preferences"
+        <activity android:name=".ui.Preferences"
             android:label="Preferences"
             android:launchMode="singleTask"></activity>
 

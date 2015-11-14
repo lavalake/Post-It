@@ -1,4 +1,4 @@
-package jk.jspd.cmu.edu.postit;
+package jk.jspd.cmu.edu.postit.model;
 
 import android.app.Service;
 import android.content.Context;
@@ -10,13 +10,8 @@ import android.location.LocationManager;
  * Created by Jianwang on 11/04/15.
  */
 import android.app.AlertDialog;
-import android.app.Service;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;

@@ -1,4 +1,4 @@
-package jk.jspd.cmu.edu.postit;
+package jk.jspd.cmu.edu.postit.ui;
 
 /**
  * Created by Ricky on 2/21/15.

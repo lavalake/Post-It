@@ -1,20 +1,21 @@
-package jk.jspd.cmu.edu.postit;
+package jk.jspd.cmu.edu.postit.ui;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import jk.jspd.cmu.edu.postit.R;
 
 public class PostNewActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.post_input);
+        setContentView(R.layout.post_new_activity);
         //Button send = (Button) findViewById(R.id.SendButton);
         FloatingActionButton send = (FloatingActionButton) findViewById(R.id.SendButton);
         send.setOnClickListener(new View.OnClickListener() {
