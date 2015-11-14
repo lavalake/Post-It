@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/login" >
+    </ImageView>
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Welcom to PostIt"
+            android:textColor="#57647D"
+            android:textSize="40sp"
+            android:textStyle="bold" >
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:layout_width="260dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+
+            android:orientation="vertical" >
+            <AutoCompleteTextView
+                android:id="@+id/username"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="1dp"
+                android:background="#FFFFFF"
+                android:drawableLeft="@drawable/user"
+                android:drawablePadding="10dp"
+                android:hint="User Name"
+                android:textColor="#3D3D3D"
+                android:textColorHint="#A3B1CA"
+                android:textSize="25sp" >
+            </AutoCompleteTextView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:layout_marginTop="4dp"
+                android:background="#F2F2F2" >
+            </View>
+            <EditText
+                android:id="@+id/pwd"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#FFFFFF"
+                android:drawableLeft="@drawable/password"
+                android:drawablePadding="10dp"
+                android:hint="Input Password  "
+                android:inputType="textPassword"
+                android:textColorHint="#A3B1CA"
+                android:textSize="25sp" >
+            </EditText>
+        </LinearLayout>
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+
+            android:gravity="center"
+            android:text="Login"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" >
+        </Button>
+        <LinearLayout
+
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="20dp">"
+            <CheckBox
+                android:id="@+id/cbRememberPwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Remember Password"
+                android:textColor="#5E6A81"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/btnForgetPwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:gravity="right"
+                android:layout_weight="1"
+
+                android:textSize="25sp"
+                android:text="Forget Password？"/>
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/zhucexinxi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:text="Sign Up "
+            android:textColor="#5E6A81"
+            android:textSize="25sp" >
+            "
+        </TextView>
+
+    </RelativeLayout>
+</LinearLayout>
