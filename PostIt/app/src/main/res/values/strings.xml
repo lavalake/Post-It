@@ -2,4 +2,5 @@
     <string name="app_name">PostIt</string>
     <string name="title_activity_maps">Map</string>
     <string name="settings">Setting</string>
+    <string name="facebook_app_id">808674522588455</string>
 </resources>

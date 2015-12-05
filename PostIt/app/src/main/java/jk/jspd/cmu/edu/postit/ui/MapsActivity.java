@@ -1,5 +1,6 @@
 package jk.jspd.cmu.edu.postit.ui;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import android.content.Intent;
 import android.location.Address;
@@ -8,12 +9,20 @@ import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.telephony.TelephonyManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Color;
+import android.os.AsyncTask;
 
 //import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.gms.maps.CameraUpdate;
@@ -44,15 +53,31 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.net.URL;
+
+import com.facebook.ProfileTracker;
+import com.facebook.Profile;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
+import com.facebook.AccessToken;
+import com.facebook.HttpMethod;
+import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.CallbackManager;
+import com.facebook.GraphRequestBatch;
+
+import org.json.JSONException;
+import org.json.JSONArray;
 
 import jk.jspd.cmu.edu.postit.model.AccelerometerSensor;
 import jk.jspd.cmu.edu.postit.model.ConnectionManager;
-import jk.jspd.cmu.edu.postit.model.GPSTracker;
+import jk.jspd.cmu.edu.postit.ws.local.GPSTracker;
 import jk.jspd.cmu.edu.postit.R;
+import jk.jspd.cmu.edu.postit.model.AccelerometerSensor;
 
 public class MapsActivity extends FragmentActivity implements InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnMapClickListener, AccelerometerSensor.Callbacks {
-
+    private final String TAG = "Map Activity";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     GPSTracker gps;
     private Location location_current;
@@ -61,6 +86,12 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
     private String url ="https://glacial-springs-4597.herokuapp.com/";
     String imei;
     Marker ownMarker;
+
+    String fb_user_id;
+    Bitmap pf_pic;
+    private CallbackManager callbackManager;
+    AccessToken accesstoken=AccessToken.getCurrentAccessToken();
+    private AccelerometerSensor accelerationSensor;
 
     PopupWindow popupWindow;
     ConnectionManager mConn;
@@ -88,6 +119,8 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
 
     //final Geocoder geocoder = new Geocoder(this, Locale.getDefault());
     Geocoder geocoder;
+    private String fb_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +141,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
         }
 
         gps = new GPSTracker(this);
+        accelerationSensor = new AccelerometerSensor(getApplicationContext());
 
         if(gps.canGetLocation()) { // gps enabled} // return boolean true/false
             location_current = gps.getLocation();
@@ -164,8 +198,50 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
             }
         });
 
+        GraphRequest graphRequest = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+            /* handle the result */
 
+                            Log.e(TAG, response.getRawResponse());
+                        try {
+                            fb_user_id = response.getJSONObject().getString("id");
+                            fb_name = response.getJSONObject().getString("name");
+                            new AsyncTask<Void, Void, Bitmap>()
+                            {
+                                @Override
+                                protected Bitmap doInBackground(Void... params)
+                                {
+                                    Log.i(TAG,"try to get profile pic");
+                                    return getFacebookProfilePicture(fb_user_id);
+                                }
 
+                                @Override
+                                protected void onPostExecute(Bitmap bitmap)
+                                {
+                                    // safety check
+                                    Log.i(TAG,"got profile pic");
+                                    pf_pic = bitmap;
+                                }
+                            }.execute();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+        );
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,email,first_name,gender,last_name,link,locale,name,timezone,updated_time,verified,age_range,friends");
+        graphRequest.setParameters(parameters);
+        graphRequest.executeAsync();
+        callbackManager = CallbackManager.Factory.create();
+        new GetFriendList().execute();
     }
 
 
@@ -181,7 +257,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
         super.onResume();
         setUpMapIfNeeded();
         System.out.println("resume");
-
+        accelerationSensor.addListener(this);
         if(getIntent().getStringExtra("input") != null) {
             String input = getIntent().getStringExtra("input").toString();
             postInfoFull = input;
@@ -203,15 +279,34 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                /*
                 MarkerOptions mark = new MarkerOptions().position(new LatLng(l_1, l_2))
                         .icon(BitmapDescriptorFactory
                                 .defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(postInfoFull).snippet(addressInfo);
+                                */
+                Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
+                Canvas canvas1 = new Canvas(bmp);
+
+// paint defines the text color,
+// stroke width, size
+                Paint color = new Paint();
+                color.setTextSize(35);
+                color.setColor(Color.BLACK);
+
+//modify canvas
+                canvas1.drawBitmap(Bitmap.createScaledBitmap(pf_pic,80,80,false), 0,0, color);
+                canvas1.drawText("Jason", 30, 40, color);
+                MarkerOptions mark = new MarkerOptions().position(new LatLng(l_1, l_2))
+                        .icon(BitmapDescriptorFactory
+                                .fromBitmap(bmp)).title(postInfoFull).snippet(addressInfo);
                 String Title = input;
 
 
                 PostInfo post_new = new PostInfo(l_1, l_2, Title, "Carnegie Mellon University, Pittsburgh");
                 posts.add(post_new);
                 mark.title(Title);
+
                 ownMarker = mMap.addMarker(mark);
                 System.out.println(Title);
                 timeStamp = newTime;
@@ -273,11 +368,7 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
     public View getInfoContents(Marker marker) {
         View infoWindow = getLayoutInflater().inflate(R.layout.pop_info,null);
         TextView title = (TextView) infoWindow.findViewById(R.id.marker_title);
-        //TextView snippet = (TextView) infoWindow.findViewById(R.id.marker_snippet);
-        System.out.println("change color");
-        if(marker != ownMarker)
-            marker.setIcon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
         String titleString = marker.getTitle();
         //When click the marker, remember the postInfo for toast display
         postInfoFull = titleString;
@@ -314,7 +405,14 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
         if (popupWindow == null) {
             View infoWindow = getLayoutInflater().inflate(R.layout.postinfo_activity, null);
             TextView address = (TextView) infoWindow.findViewById(R.id.address);
-            address.setText("Jason, CMU Student");
+            /*
+            ProfilePictureView profilePictureView;
+            profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
+            profilePictureView.setProfileId(fb_user_id);
+            */
+            ImageView pic = (ImageView) infoWindow.findViewById(R.id.imageView1);
+            pic.setImageBitmap(pf_pic);
+            address.setText(fb_name);
             TextView title = (TextView) infoWindow.findViewById(R.id.show_something);
             title.setText(postInfoFull);
             popupWindow = new PopupWindow(infoWindow);
@@ -376,11 +474,105 @@ public class MapsActivity extends FragmentActivity implements InfoWindowAdapter,
 
     @Override
     public void onMoveChanged(boolean move, double value) {
-        
+        Log.e(TAG, "shake value: "+value);
     }
 
     @Override
     public void onMoveAccuracyChanged(int accuracy) {
 
     }
+
+    public static Bitmap getFacebookProfilePicture(String userID){
+        Bitmap bitmap = null;
+        try {
+            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
+
+                bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return bitmap;
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        accelerationSensor.start();
+
+    }
+    @Override
+    protected void onStop() {
+
+        accelerationSensor.stop();
+
+        super.onStop();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        accelerationSensor.removeListener(this);
+    }
+
+    class GetFriendList extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            Log.i(TAG, "Working in background...");
+            //LoginManager.getInstance().logInWithReadPermissions(FriendList.this, Arrays.asList("user_friends"));
+            //Log.i(TAG,"Having token for: "+String.valueOf(AccessToken.getCurrentAccessToken().getPermissions()));
+
+            GraphRequestBatch batch = new GraphRequestBatch(
+                    GraphRequest.newMyFriendsRequest(accesstoken,
+                            new GraphRequest.GraphJSONArrayCallback() {
+                                @Override
+                                public void onCompleted(JSONArray jarray,
+                                                        GraphResponse response) {
+                                    Log.i(TAG, "onCompleted: jsonArray "
+                                            + jarray);
+                                    Log.i(TAG, "onCompleted: response "
+                                            + response);
+                                    Log.i(TAG, "firends "+response.getRawResponse());
+
+                                }
+                            }));
+            batch.addCallback(new GraphRequestBatch.Callback() {
+
+                @Override
+                public void onBatchCompleted(GraphRequestBatch batch) {
+                    Log.i(TAG, "onbatchCompleted: jsonArray "
+                            + batch);
+
+                }
+            });
+            batch.executeAsync();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            Log.i(TAG, "Starting...");
+            super.onPreExecute();
+        }
+
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 }

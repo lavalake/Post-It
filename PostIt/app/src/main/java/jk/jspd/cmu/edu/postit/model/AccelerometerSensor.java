@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.FloatMath;
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -21,7 +22,9 @@ public class AccelerometerSensor implements SensorEventListener {
     private int accuracy;
 
     private List<Callbacks> listeners;
-
+    float x;
+    float y;
+    float z;
 
 
     private  boolean move;
@@ -39,21 +42,43 @@ public class AccelerometerSensor implements SensorEventListener {
         this.timestamp = 0;
         this.accuracy = 0;
         this.listeners = new LinkedList<>();
+        this.x=0;
+        this.y=0;
+        this.z=0;
     }
 
-    public void startSensing() {
+    public void start() {
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(SENSOR_TYPE),
                 sensorDelay);
     }
 
-    public void stopSensing() {
+    public void stop() {
         sensorManager.unregisterListener(this);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == SENSOR_TYPE) {
+            if(x == 0 && y == 0 && z == 0){
+                x = event.values[0];
+                y = event.values[1];
+                z = event.values[2];
+                timestamp = event.timestamp;
+            }else{
+                double delx = x - event.values[0];
+                double dely = y - event.values[1];
+                double delz = z - event.values[2];
+                double delta = Math.sqrt(delx*delx + dely*dely + delz*delz);
+                boolean hasListeners = !listeners.isEmpty();
+                if(delta > 30 && hasListeners &&(event.timestamp-timestamp>500000000)) {
+                    Log.e("sensor","timestamp: "+event.timestamp);
+                    for (Callbacks listener : listeners) {
+                        listener.onMoveChanged(true, delta);
+                    }
+                    timestamp = event.timestamp;
+                }
 
+            }
 
 
             }

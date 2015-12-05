@@ -46,7 +46,8 @@
             android:name="android.permission.ACCESS_COARSE_LOCATION" />
         <uses-permission
             android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
         <activity
             android:name=".ui.LoginActivity"
             android:label="PostIt"
@@ -56,6 +57,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id"/>
         </activity>
         <activity
             android:name=".ui.MapsActivity"
@@ -69,6 +72,11 @@
         <activity android:name=".ui.Preferences"
             android:label="Preferences"
             android:launchMode="singleTask"></activity>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
 
     </application>
 

@@ -8,5 +8,5 @@ import org.json.JSONException;
 import org.json.JSONObject;
 public interface ConnectionInterface {
     public int send(JSONObject obj, String url);
-    public JSONObject receive(String url);
+    public JSONObject sycServer(String url);
 }

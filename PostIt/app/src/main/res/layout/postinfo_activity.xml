@@ -2,20 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="100dp"
     android:background="#99000000">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#99000000">
+
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#99ffffff"
-            android:src="@drawable/profile" />
 
+            android:src="@drawable/profile" />
+        <!---
+        <com.facebook.widget.ProfilePictureView
+            android:id="@+id/friendProfilePicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="5sp"
+             />
+        -->
         <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
@@ -25,9 +34,12 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="20dp"
-        android:textSize="10sp"
-        android:background="#99ffffff"
-        android:gravity="center"/>
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+
+        android:gravity="center"
+             />
         </RelativeLayout>
     <TextView
         android:id="@+id/show_something"
@@ -38,7 +50,7 @@
         android:elegantTextHeight="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:layout_marginTop="70dp"
         android:layout_alignParentEnd="true"
         android:layout_marginLeft="20dp"
